@@ -240,10 +240,10 @@ module.exports = function(tilelive, options) {
         }
 
         info.bounds = [
-          Math.min(a.bounds[0], b.bounds[0]),
-          Math.min(a.bounds[1], b.bounds[1]),
-          Math.max(a.bounds[2], b.bounds[2]),
-          Math.max(a.bounds[3], b.bounds[3])
+          Math.min(a.bounds && a.bounds[0] ? a.bounds[0] : Infinity, b.bounds && b.bounds[0] ? b.bounds[0] : Infinity),
+          Math.min(a.bounds && a.bounds[1] ? a.bounds[1] : Infinity, b.bounds && b.bounds[1] ? b.bounds[1] : Infinity),
+          Math.max(a.bounds && a.bounds[2] ? a.bounds[2] : -Infinity, b.bounds && b.bounds[2] ? b.bounds[2] : -Infinity),
+          Math.max(a.bounds && a.bounds[3] ? a.bounds[3] : -Infinity, b.bounds && b.bounds[3] ? b.bounds[3] : -Infinity)
         ];
 
         info.autoscale = a.autoscale && b.autoscale;
@@ -265,6 +265,13 @@ module.exports = function(tilelive, options) {
     if (info.maskLevel === info.maxzoom) {
       delete info.maskLevel;
     }
+      
+    info.bounds = [
+      info.bounds[0] !== Infinity ? info.bounds[0] : -180,
+      info.bounds[1] !== Infinity ? info.bounds[1] : -90,
+      info.bounds[2] !== Infinity ? info.bounds[2] : 180,
+      info.bounds[3] !== Infinity ? info.bounds[3] : 90,
+    ]
 
     return setImmediate(callback, null, info);
   };
